@@ -1,75 +1,103 @@
 # Chapter 4: CNN-Based Urban Noise Prediction using Multispectral Remote Sensing (EfficientNet)
 
-This directory contains the implementation and data preparation pipeline for the methodology described in **Chapter 4** of the dissertation:  
-**"Predicting Urban Noise Levels Using EfficientNet and Multispectral Remote Sensing Data: A Case Study of Southampton"**
+This directory contains the full implementation of the study described in **Chapter 4** of the dissertation:
+**"Predicting Urban Noise Levels Using EfficientNet and Multispectral Remote Sensing Data: A Case Study of Southampton"**.
 
 ---
 
 ## 📌 Overview
 
-This study explores the predictive power of high-resolution multispectral remote sensing imagery for modeling urban noise levels. A convolutional neural network (CNN) based on the EfficientNet architecture is used to predict noise values from spatial-spectral patterns extracted around each measurement point.
-
-The model is trained on data from the city of Southampton, using 84-layer feature maps derived from remote sensing imagery and labeled with ground-truth noise measurements (in dB LAeq). This experiment serves as a foundational proof-of-concept for integrating spectral and spatial information in urban noise modeling.
+This chapter presents a deep learning pipeline that predicts urban noise levels directly from remote sensing imagery. The method utilizes an EfficientNet-B0 backbone, adapted to handle high-dimensional multispectral feature maps. The model is trained to learn spatial-spectral patterns from 84-channel image patches centered on field-collected noise measurements.
 
 ---
 
-## 🛰️ Data Preparation Pipeline
+## 🚀 Data Preprocessing and Input Design
 
-### 1. **Feature Map Generation**
+### 1. Feature Map Construction
 
-- **Data Source**: WorldView-2 multispectral imagery (8 bands)
-- **Tools Used**:  
-  - **ENVI 5.3**: for basic radiometric and atmospheric corrections  
-  - **Orfeo Toolbox**: for extracting texture and morphological features
+* Source: WorldView-2 multispectral imagery
+* Tools: ENVI 5.3 and Orfeo Toolbox
+* Output: 84-channel feature maps combining spectral, textural, and morphological features
 
-- **Total Feature Maps**: `84`
-  - Includes:
-    - Grey-Level Co-occurrence Matrix (GLCM) features (contrast, homogeneity, entropy, etc.)
-    - Morphological transformations
-    - Spectral indices and band statistics
+### 2. Patch Extraction
 
-### 2. **Sample Extraction**
-
-- **Spatial Reference**: Noise measurement points (1m resolution)
-- **Patch Size**: `250 × 250 pixels` (≈500m × 500m at 2m resolution)
-- **Feature Tensor Shape**: `250 × 250 × 84`
-- **Label**: Measured noise value at the central point
-
-Each sample thus consists of a 3D tensor (`H × W × C`) and a scalar noise label (`LAeq` in dB).
+* Noise samples used as center points
+* Patch size: `250 × 250 × 84`, corresponding to \~500 m spatial coverage
+* Format: Converted to TFRecords for training and prediction
 
 ---
 
-## 🧠 Model Architecture: EfficientNetB0 + Regression haed
+## 🧠 Model Architecture
 
-- Based on EfficientNet-B1, modified to accept input tensors of size `[250, 250, 84]`
-- Custom convolutional input layer to adapt to 84-channel input
-- Regression output for continuous noise prediction
-- Loss Function: Huber Loss 
-- Optimizer: Adam
+### EfficientNet-B0 with Decay Matrix
 
----
-
-## 🚀 Training Procedure
-
-1. Load all samples into memory or use batch-wise HDF5/TFRecord pipeline
-2. Split into training, validation and test sets (e.g., 60%/20%/20%)
-3. Apply data augmentation (optional)
-4. Train EfficientNet-B0 with modified input channel size
-5. Track performance using validation MAE and R²
+* Input: `(250, 250, 84)` image tensors
+* A spatial decay matrix is applied to emphasize the center region and reduce edge influence
+* Pretrained EfficientNet-B0 backbone (weights initialized from scratch)
+* Global average pooling followed by two fully connected layers (256, 64 units)
+* Output: A single scalar representing normalized noise level (`sigmoid`, scaled back post-prediction)
 
 ---
 
-## 📊 Prediction & Evaluation
+## ⚙️ Training Pipeline
 
-- Predict on test/validation noise points
-- Compare predicted noise levels with ground truth
-- Evaluate using:
-  - MAE (Mean Absolute Error)
-  - R² (Coefficient of Determination)
+### Key Techniques
 
-You may also visualize spatial noise distributions by stitching predictions back to spatial maps.
+* Label normalization to [0,1] range based on known noise bounds
+* Loss function: Huber loss, optionally with penalty for large errors
+* Metrics: MAE and R²
+* Optimizer: Adam with learning rate decay and gradient clipping
+* Mixed precision training enabled for performance
+
+### Execution
+
+* Training and validation datasets loaded from TFRecord files
+* Caching and GPU prefetching used to improve speed
+* Model checkpoints and training curves are automatically saved and visualized
 
 ---
 
-## 📁 Folder Structure
+## 🔮 Prediction Workflow
 
+* Predictions are generated for new image patches stored as TFRecords
+* Coordinate normalization is applied for spatial reference
+* Outputs are denormalized and joined with shapefiles using `geopandas`
+* The final predicted maps are exported as shapefiles (`.shp`) for GIS visualization
+
+---
+
+## 📁 File Structure
+
+```
+chapter4_efficientnet/
+├── notebook_colab.ipynb         ← Unified pipeline notebook (training + prediction)
+├── Train.py                     ← Full training script with custom loss, model, and callbacks
+├── Prediction.py                ← Prediction and export script using TFRecord + GeoPandas
+├── feature_maps/                ← Optional folder for storing 84-band input features
+├── trained_models/              ← Saved EfficientNet models (.h5)
+├── results/                     ← Evaluation metrics and visualization outputs
+└── README.md                    ← This file
+```
+
+---
+
+## 🤪 Example Usage
+
+To run this pipeline in Google Colab:
+
+```python
+
+
+```
+
+---
+
+## 📜 Citation
+
+> Zhu, F. (2025). *Predicting Urban Noise Levels Using EfficientNet and Multispectral Remote Sensing Data: A Case Study of Southampton*. Chapter 4 in PhD Dissertation, University of Southampton.
+
+---
+
+## 📬 Contact
+
+Feiyu Zhu – (5835udock0@gmail.com)]
