@@ -5,7 +5,7 @@ Code and models for multispectral and GNN-based urban noise prediction across UK
 
 # Urban Noise Prediction via Remote Sensing and Graph Learning
 
-This repository contains the full implementation of the methods described in my PhD dissertation, which explores scalable and transferable models for predicting urban noise levels using high-resolution multispectral satellite imagery and graph-based machine learning.
+This repository contains the full implementation of the methods described in Feiyu Zhu's PhD dissertation, which explores scalable and transferable models for predicting urban noise levels using high-resolution multispectral satellite imagery and graph-based machine learning.
 
 ## 📚 Project Structure
 
