@@ -13,15 +13,3 @@ This repository contains the full implementation of the methods described in Fei
 - `chapter5_gnn_southampton/` - Graph neural network model integrating spatial structure and urban context (Southampton only).
 - `chapter6_crosscity_generalization/` - Generalizable noise prediction across five UK cities using domain adaptation and pseudo-labelling.
 
-## 🌐 Colab Access
-
-Each sub-folder contains a Colab-ready `.ipynb` notebook with detailed annotations. You can open them directly in Google Colab via the button below:
-
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](link-to-your-colab-notebook)
-
-## 🛠 Requirements
-
-Install dependencies locally (optional, for running outside Colab):
-
-```bash
-pip install -r requirements.txt
