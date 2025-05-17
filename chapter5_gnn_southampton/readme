@@ -79,8 +79,8 @@ Each row in the dataset represents a noise prediction point and includes:
 
 ```
 chapter5_gnn_southampton/
-├── GNN_predset_gen.ipynb       ← Prediction dataset construction (feature extraction + z-score)
-├── GNN0.ipynb                  ← Training and validation of GraphSage based model
+├── GNN_prerocessing.ipynb       ← Prediction dataset construction (feature extraction + z-score)
+├── train&val.ipynb                  ← Training and validation of GraphSage based model
 ├── features/                   ← Intermediate feature maps (raster)
 ├── dataset/                    ← Structured datasets (CSV/Parquet with spatial reference)
 ├── models/                     ← Saved GNN models (.pt)
