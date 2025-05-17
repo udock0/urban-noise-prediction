@@ -61,7 +61,7 @@ Each row in the dataset represents a noise prediction point and includes:
 
 ## ⚙️ Training Procedure - Use PyTorch Geometric to construct graph and perform batch-wise message passing
 
-* Dataset split: 60% training, 20% validation  20% test based on node mask
+* Dataset split: 60% training, 20% validation 20% test based on node mask
 * Early stopping using validation MAE
 * Optionally visualize node embeddings or training dynamics
 
@@ -80,7 +80,7 @@ Each row in the dataset represents a noise prediction point and includes:
 ```
 chapter5_gnn_southampton/
 ├── GNN_predset_gen.ipynb       ← Prediction dataset construction (feature extraction + z-score)
-├── GNN0.ipynb                  ← Training and validation of GCN/GAT model
+├── GNN0.ipynb                  ← Training and validation of GraphSage based model
 ├── features/                   ← Intermediate feature maps (raster)
 ├── dataset/                    ← Structured datasets (CSV/Parquet with spatial reference)
 ├── models/                     ← Saved GNN models (.pt)
