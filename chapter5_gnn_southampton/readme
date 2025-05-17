@@ -1,1 +1,102 @@
+# Chapter 5: GNN-Based Urban Noise Prediction in Southampton using Remote Sensing Indices and Texture Features
+
+This directory contains the implementation for **Chapter 5** of the dissertation:
+**"Integrating Remote Sensing-Derived Indices and Spatial Texture Features in a Graph Neural Network for Urban Noise Prediction: A Case Study in Southampton"**.
+
+---
+
+## 📌 Overview
+
+This study advances noise mapping by introducing a graph neural network (GNN) model that incorporates spatial dependencies among noise measurement points. Unlike the CNN-based method in Chapter 4, this chapter leverages **remote sensing indices** and their derived **GLCM texture features** to form structured tabular inputs embedded in a non-Euclidean graph.
+
+---
+
+## 🚀 Feature Construction
+
+### 1. Feature Sources
+
+* **Base Features**: Multispectral indices derived from WorldView-2 imagery
+* **Texture Features**: GLCM-based texture maps computed from each index
+* **Total Feature Maps**: 125 (including original indices and derived textures)
+
+### 2. Spatial Structure
+
+* Six concentric ring buffers around each noise point: `[0–30m, 30–60m, 60–120m, 120–250m, 250–500m, 500–1000m]`
+* Each feature map is summarized using 11 statistical measures (mean, std, skewness, kurtosis, entropy, percentiles, etc.)
+* **Total Variables**: 125 feature maps × 6 buffers × \~11 statistics ≈ **8250 total features**
+
+---
+
+## 📊 Data Preparation
+
+### Dataset Composition
+
+Each row in the dataset represents a noise prediction point and includes:
+
+* `x`, `y`: Spatial coordinates (projected system)
+* `feature_001` to `feature_8250`: Extracted statistical descriptors
+* *Labels only present for training samples (prediction samples are unlabeled)*
+
+### Preprocessing Pipeline (see `dataset_gen.ipynb`)
+
+* Load prediction vector points (e.g., grid-based samples)
+* Extract zonal statistics for each feature map over multiple buffer zones
+* Normalize features using z-score statistics
+* Save dataset as `.csv` or `.parquet` with full spatial traceability
+
+> The training set is prepared using a nearly identical process but with labeled noise measurement points.
+
+---
+
+## 🧠 Model Architecture: Graph Neural Network
+
+* **Nodes**: Noise prediction points (with or without labels)
+* **Edges**: Constructed using k-NN based on spatial proximity (default: k=8 or radius=300m)
+* **Node Features**: 8250-dimensional normalized vectors
+* **GNN Backbone**: GraphSageConv
+* **Output**: Predicted LAeq (noise) values for nodes with labels
+* **Loss Function**: Huber loss or custom RMSE-aware regression loss
+
+---
+
+## ⚙️ Training Procedure - Use PyTorch Geometric to construct graph and perform batch-wise message passing
+
+* Dataset split: 60% training, 20% validation  20% test based on node mask
+* Early stopping using validation MAE
+* Optionally visualize node embeddings or training dynamics
+
+---
+
+## 🔮 Prediction and Evaluation
+
+* Inference on unlabeled graph nodes
+* Denormalize predicted noise values for interpretation
+* Export results as `.csv` or merge back with geometry `.shp` for spatial analysis
+
+---
+
+## 📁 File Structure
+
+```
+chapter5_gnn_southampton/
+├── GNN_predset_gen.ipynb       ← Prediction dataset construction (feature extraction + z-score)
+├── GNN0.ipynb                  ← Training and validation of GCN/GAT model
+├── features/                   ← Intermediate feature maps (raster)
+├── dataset/                    ← Structured datasets (CSV/Parquet with spatial reference)
+├── models/                     ← Saved GNN models (.pt)
+├── results/                    ← Metrics, prediction maps, shapefiles
+└── README.md                   ← This file
+```
+
+---
+
+## 📲 Citation
+
+> Zhu, F. (2025). *Integrating Remote Sensing-Derived Indices and Spatial Texture Features in a Graph Neural Network for Urban Noise Prediction: A Case Study in Southampton*. Chapter 5 in PhD Dissertation, University of Southampton.
+
+---
+
+## 📬 Contact
+
+Feiyu Zhu – \[[5835udock0@gmail.com](mailto:5835udock0@gmail.com)]
 
