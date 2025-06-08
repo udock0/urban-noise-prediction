@@ -1,1 +1,124 @@
+🛰️ Pseudo-Labeled Urban Noise Mapping with Dual-Branch GNNs
+📌 Overview
+This repository contains the full codebase for the implementation described in Chapter 6 of the dissertation, focusing on transferable urban noise modeling via pseudo-label learning and domain-adaptive graph neural networks (GNNs).
 
+The study extends prior noise prediction work by integrating high-confidence pseudo-labels and Urban Atlas 2012 land use/land cover (LULC) data into a unified framework. Although noise sample sources remain consistent with earlier chapters, this design enhances spatial generalization and cross-city transferability.
+
+🏙️ Study Design
+The project constructs high-confidence pseudo-labels for four target cities using labeled data from Southampton as a reference. The pseudo-labeled datasets are as follows:
+
+Cardiff: 18,840 grids → 17,595 pseudo-labels
+
+Liverpool: 18,755 grids → 18,199 pseudo-labels
+
+Nottingham: 153,972 grids → 14,732 pseudo-labels
+
+Portsmouth: 51,680 grids → 4,935 pseudo-labels
+
+All cities share harmonized multispectral remote sensing data (WorldView-2) and enriched LULC inputs.
+
+🔬 Technical Workflow
+Standardization of Remote Sensing Imagery
+
+Using Southampton as the reference domain, all target city imagery undergoes normalization to ensure visual and statistical comparability.
+
+Techniques include:
+
+Linear contrast stretching
+
+Weighted histogram matching based on pseudo-invariant features (PIF)
+
+Feature Map Construction
+
+Three families of feature maps are generated:
+
+GLCM textures (e.g., contrast, homogeneity)
+
+Morphological profiles (e.g., opening, closing)
+
+Z-score local enhancement for structural edges
+
+Feature Variable Extraction
+
+Features are aggregated at grid-cell level
+
+LULC data from Urban Atlas 2012 is integrated
+
+Final input variables include those used for:
+
+Model input (node features)
+
+Edge weight computation (spatial graph)
+
+Pseudo-label inference
+
+Pseudo-Label Construction
+
+Based on:
+
+Classification confidence
+
+Source label proximity
+
+Local texture context
+
+Dual-Branch GNN Architecture
+
+GAT branch: captures high-resolution, localized noise (e.g., traffic, street canyons)
+
+GCN branch: models broader spatial dependencies (e.g., ports, industrial zones)
+
+Domain alignment is enforced using multi-domain adversarial learning to:
+
+Learn generalizable representations
+
+Retain city-specific residuals
+
+Training and Inference
+
+Trained on pseudo-labeled targets + source labels
+
+Outputs both general noise map and city-specific adjusted predictions
+
+📁 Directory Structure
+bash
+Copy
+Edit
+.
+├── data/
+│   ├── raw_imagery/
+│   ├── urban_atlas/
+│   └── processed/
+├── src/
+│   ├── image_standardization/
+│   │   └── normalize_worldview.py
+│   ├── feature_maps/
+│   │   ├── glcm_features.py
+│   │   ├── morphology_profiles.py
+│   │   └── zscore_local.py
+│   ├── feature_extraction/
+│   │   └── extract_grid_features.py
+│   ├── pseudo_labeling/
+│   │   └── generate_pseudolabels.py
+│   ├── model/
+│   │   ├── dual_branch_gnn.py
+│   │   ├── graph_construction.py
+│   │   └── domain_adaptation.py
+│   └── train_predict/
+│       ├── train_gnn.py
+│       └── predict_city.py
+├── README.md
+└── requirements.txt
+🧪 Environment & Dependencies
+Recommended Python version: >=3.8
+
+Install dependencies:
+
+bash
+Copy
+Edit
+pip install -r requirements.txt
+📌 Citation
+If you use this code or data in your research, please cite:
+
+[Assessing the feasibiity of ]. PhD Dissertation, [University of Southampton], 2025.
