@@ -72,27 +72,27 @@ This project is structured around **six key stages**:
 
 .
 ├── data/
-│   ├── raw\_imagery/              # Raw WorldView-2 data
-│   ├── urban\_atlas/              # LULC rasters
+│   ├── raw_imagery/              # Raw WorldView-2 data
+│   ├── urban_atlas/              # LULC rasters
 │   └── processed/                # Normalized, resampled inputs
 ├── src/
-│   ├── image\_standardization/
-│   │   └── normalize\_worldview\.py
-│   ├── feature\_maps/
-│   │   ├── glcm\_features.py
-│   │   ├── morphology\_profiles.py
-│   │   └── zscore\_local.py
-│   ├── feature\_extraction/
-│   │   └── extract\_grid\_features.py
-│   ├── pseudo\_labeling/
-│   │   └── generate\_pseudolabels.py
+│   ├── image_standardization/
+│   │   └── normalize_worldview.py
+│   ├── feature_maps/
+│   │   ├── glcm_features.py
+│   │   ├── morphology_profiles.py
+│   │   └── zscore_tanh_local.py
+│   ├── feature_extraction/
+│   │   └── extract_grid_features.py
+│   ├── pseudo_labeling/
+│   │   └── generate_pseudolabels.py
 │   ├── model/
-│   │   ├── dual\_branch\_gnn.py
-│   │   ├── graph\_construction.py
-│   │   └── domain\_adaptation.py
-│   └── train\_predict/
-│       ├── train\_gnn.py
-│       └── predict\_city.py
+│   │   ├── dual_branch_gnn.py
+│   │   ├── graph_construction.py
+│   │   └── domain_adaptation.py
+│   └── train_predict/
+│       ├── train_gnn.py
+│       └── predict_city.py
 ├── README.md
 └── requirements.txt
 
